@@ -353,8 +353,6 @@ public abstract class GLWallpaperService extends WallpaperService {
                 }
             }
         }
-        
-        
 
 		@Override
 		public void onCreate(SurfaceHolder surfaceHolder)
