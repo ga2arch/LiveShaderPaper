@@ -133,11 +133,9 @@ public class MyRenderer implements GLWallpaperService.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         long current = System.currentTimeMillis() - start;
-        if (current - old > 10)
-            old = current;
 
         GLES20.glUniform2f(uResolution, ((float) width), ((float) height));
-        GLES20.glUniform1f(uTime, (float) old/1000);
+        GLES20.glUniform1f(uTime, (float) current/1000);
 
         GLES20.glUseProgram(mProgram);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 6);
