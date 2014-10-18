@@ -1,6 +1,7 @@
 package zap.gabriele.com.hellolivewallpaper;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -31,12 +32,12 @@ public class MyRenderer implements GLWallpaperService.Renderer {
 
     String vertexSource = "attribute vec3 position;" +
             "uniform vec2 resolution;" +
-            "uniform float uTime;" +
+            "uniform float time;" +
             "varying vec2 iResolution;" +
             "varying float iGlobalTime;" +
             "void main(void) {" +
             "   iResolution = resolution;" +
-            "   iGlobalTime = uTime;" +
+            "   iGlobalTime = time;" +
             "   gl_Position = vec4(position, 1.0);" +
             "} ";
 
@@ -142,7 +143,7 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        //Log.d("TIME", Float.toString(currentTime));
+        Log.d("TIME", Float.toString(currentTime));
         GLES20.glUniform2f(uResolution, ((float) width), ((float) height));
         GLES20.glUniform1f(uTime, currentTime);
 
