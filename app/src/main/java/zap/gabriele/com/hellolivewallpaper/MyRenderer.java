@@ -1,6 +1,7 @@
 package zap.gabriele.com.hellolivewallpaper;
 
 import android.opengl.GLES20;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -87,6 +88,8 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         start = System.currentTimeMillis();
+
+        Log.d("CREATE", "CREATED");
 
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
