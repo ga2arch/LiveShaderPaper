@@ -1,7 +1,7 @@
 package zap.gabriele.com.hellolivewallpaper;
 
 import android.opengl.GLES20;
-import android.util.Log;
+import android.text.format.Time;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -28,7 +28,9 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     // Attributes indices
     int aPosition;
 
-    float currentTime;
+    Time now;
+    long start;
+    long old;
 
     String vertexSource = "attribute vec3 position;" +
             "uniform vec2 resolution;" +
@@ -86,20 +88,9 @@ public class MyRenderer implements GLWallpaperService.Renderer {
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+        start = System.currentTimeMillis();
+
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-        new Thread(new Runnable() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(20);
-                        currentTime += 0.01;
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }).start();
 
         int vertex = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
         int fragment = GLES20.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
@@ -143,9 +134,12 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     public void onDrawFrame(GL10 gl) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        Log.d("TIME", Float.toString(currentTime));
+        long current = System.currentTimeMillis() - start;
+        if (current - old > 10)
+            old = current;
+
         GLES20.glUniform2f(uResolution, ((float) width), ((float) height));
-        GLES20.glUniform1f(uTime, currentTime);
+        GLES20.glUniform1f(uTime, (float) old/1000);
 
         GLES20.glUseProgram(mProgram);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 6);
