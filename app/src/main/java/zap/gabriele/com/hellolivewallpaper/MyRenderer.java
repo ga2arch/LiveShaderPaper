@@ -1,7 +1,6 @@
 package zap.gabriele.com.hellolivewallpaper;
 
 import android.opengl.GLES20;
-import android.text.format.Time;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -28,7 +27,6 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     // Attributes indices
     int aPosition;
 
-    Time now;
     long start;
     long old;
 
