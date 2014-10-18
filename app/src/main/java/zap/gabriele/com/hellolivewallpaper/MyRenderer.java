@@ -17,20 +17,26 @@ public class MyRenderer implements GLWallpaperService.Renderer {
     int width;
     int height;
 
+    // Program
     int mProgram;
-    int resolution;
-    int time;
+
+    // Uniform indices
+    int uResolution;
+    int uTime;
+
+    // Attributes indices
+    int aPosition;
 
     float currentTime;
 
     String vertexSource = "attribute vec3 position;" +
             "uniform vec2 resolution;" +
-            "uniform float time;" +
+            "uniform float uTime;" +
             "varying vec2 iResolution;" +
             "varying float iGlobalTime;" +
             "void main(void) {" +
             "   iResolution = resolution;" +
-            "   iGlobalTime = time;" +
+            "   iGlobalTime = uTime;" +
             "   gl_Position = vec4(position, 1.0);" +
             "} ";
 
@@ -110,18 +116,18 @@ public class MyRenderer implements GLWallpaperService.Renderer {
         GLES20.glLinkProgram(mProgram);
         GLES20.glUseProgram(mProgram);
 
+        FloatBuffer pointsVbo = ByteBuffer.allocateDirect(points.length * 4)
+                                          .order(ByteOrder.nativeOrder())
+                                          .asFloatBuffer();
+        pointsVbo.put(points).position(0);
 
-        FloatBuffer cubePositionsBuffer = ByteBuffer.allocateDirect(points.length * 4)
-                .order(ByteOrder.nativeOrder()).asFloatBuffer();
-        cubePositionsBuffer.put(points).position(0);
+        aPosition = GLES20.glGetAttribLocation(mProgram, "position");
+        GLES20.glEnableVertexAttribArray(aPosition);
+        GLES20.glVertexAttribPointer(aPosition, 3,
+                GLES20.GL_FLOAT, false, 0, pointsVbo);
 
-        int pos = GLES20.glGetAttribLocation(mProgram, "position");
-        GLES20.glEnableVertexAttribArray(pos);
-        GLES20.glVertexAttribPointer(pos, 3,
-                GLES20.GL_FLOAT, false, 0, cubePositionsBuffer);
-
-        resolution = GLES20.glGetUniformLocation(mProgram, "resolution");
-        time = GLES20.glGetUniformLocation(mProgram, "time");
+        uResolution = GLES20.glGetUniformLocation(mProgram, "resolution");
+        uTime = GLES20.glGetUniformLocation(mProgram, "time");
 
     }
 
@@ -137,8 +143,8 @@ public class MyRenderer implements GLWallpaperService.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
         //Log.d("TIME", Float.toString(currentTime));
-        GLES20.glUniform2f(resolution, ((float) width), ((float) height));
-        GLES20.glUniform1f(time, currentTime);
+        GLES20.glUniform2f(uResolution, ((float) width), ((float) height));
+        GLES20.glUniform1f(uTime, currentTime);
 
         GLES20.glUseProgram(mProgram);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 6);
